@@ -50,3 +50,5 @@ sensors:
 The above configuration assumes a ROS topic named `/mujoco/tactile_sensor` with a message of type [mujoco_tactile_sensor_plugin/TactileSensorData](https://github.com/isri-aist/MujocoTactileSensorPlugin/blob/main/msg/TactileSensorData.msg) being published by some node (e.g. [isri-aist/MujocoTactileSensorPlugin](https://github.com/isri-aist/MujocoTactileSensorPlugin)).
 The tactile sensor frame (e.g. `jvrc1_right_elbow_tactile_sensor`) must be defined in a URDF model (e.g. `jvrc_description/urdf/jvrc1.urdf`).
 The force sensor (e.g. `RightElbowForceSensor`) must be defined in robot module (e.g. `mc_rtc/src/mc_robots/jvrc1.cpp`).
+
+For system details for using tactile sensor with mc_mujoco, please refer to [here](doc/McMujocoTactileSensorSytem.md).
