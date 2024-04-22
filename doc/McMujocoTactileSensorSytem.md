@@ -5,6 +5,11 @@ MujocoTactileSensorPlugin (MuJoCo plugin) simulates the tactile sensor and publi
 
 ![McMujocoTactileSensorSytem.png](images/McMujocoTactileSensorSytem.png)
 
+To use MujocoTactileSensorPlugin with `mc_mujoco`, the following description must be added to `${HOME}/.config/mc_rtc/mc_mujoco/mc_mujoco.yaml`:
+```yaml
+PluginPaths: ["<path to catkin workspace>/devel/.private/mujoco_tactile_sensor_plugin/lib"]
+```
+
 ### Model and configuration files
 
 Typical descriptions of tactile sensors in the model and configuration files are as follows:
