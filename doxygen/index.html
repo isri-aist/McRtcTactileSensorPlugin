@@ -84,7 +84,10 @@ $(function() {
 <ul>
 <li><a href="https://jrl-umi3218.github.io/mc_rtc">mc_rtc</a></li>
 <li><a href="https://github.com/isri-aist/MujocoTactileSensorPlugin">isri-aist/MujocoTactileSensorPlugin</a> (Install as a ROS package)</li>
-<li><code>ros-${ROS_DISTRO}-eigen-conversions</code></li>
+<li><a href="https://github.com/isri-aist/eSkinRosUtils">eSkinRosUtils</a> ()<ul>
+<li>An option to build without dependency on the e-Skin tactile sensor is also supported.</li>
+</ul>
+</li>
 </ul>
 <h2>Installation procedure</h2>
 <div class="fragment"><div class="line"># Load the ROS setup file so that the `mujoco_tactile_sensor_plugin` package can be found</div>
@@ -92,7 +95,7 @@ $(function() {
 <div class="line">$ git clone git@github.com:isri-aist/McRtcTactileSensorPlugin.git --recursive</div>
 <div class="line">$ cd McRtcTactileSensorPlugin</div>
 <div class="line">$ mkdir build &amp;&amp; cd build</div>
-<div class="line">$ cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo</div>
+<div class="line">$ cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo # Add &quot;-DENABLE_ESKIN=OFF&quot; option if you do not use e-Skin tactile sensor</div>
 <div class="line">$ make</div>
 <div class="line">$ make install</div>
 </div><!-- fragment --><h1>Plugins</h1>
@@ -101,7 +104,8 @@ $(function() {
 <p>See <a href="https://jrl-umi3218.github.io/mc_rtc/tutorials/usage/global-plugins.html">this page</a> for a general tutorial on configuring mc_rtc plugins.</p>
 <p>Put the following line in the mc_rtc configuration (e.g. <code>${HOME}/.config/mc_rtc/mc_rtc.yaml</code>). </p><div class="fragment"><div class="line">Plugins: [TactileSensor]</div>
 </div><!-- fragment --><p>Put the following lines in the plugin configuration (e.g. <code>${HOME}/.config/mc_rtc/plugins/TactileSensor.yaml</code>). </p><div class="fragment"><div class="line">sensors:</div>
-<div class="line">  - topicName: /mujoco/tactile_sensor</div>
+<div class="line">  - msgType: mujoco # &quot;mujoco&quot; or &quot;eskin&quot;</div>
+<div class="line">    topicName: /mujoco/tactile_sensor</div>
 <div class="line">    tactileSensorFrameName: jvrc1_right_elbow_tactile_sensor</div>
 <div class="line">    forceSensorName: RightElbowForceSensor</div>
 </div><!-- fragment --><p>The above configuration assumes a ROS topic named <code>/mujoco/tactile_sensor</code> with a message of type <a href="https://github.com/isri-aist/MujocoTactileSensorPlugin/blob/main/msg/TactileSensorData.msg">mujoco_tactile_sensor_plugin/TactileSensorData</a> being published by some node (e.g. <a href="https://github.com/isri-aist/MujocoTactileSensorPlugin">isri-aist/MujocoTactileSensorPlugin</a>). The tactile sensor frame (e.g. <code>jvrc1_right_elbow_tactile_sensor</code>) must be defined in a URDF model (e.g. <code>jvrc_description/urdf/jvrc1.urdf</code>). The force sensor (e.g. <code>RightElbowForceSensor</code>) must be defined in robot module (e.g. <code>mc_rtc/src/mc_robots/jvrc1.cpp</code>).</p>
