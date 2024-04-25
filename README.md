@@ -14,7 +14,8 @@ mc_rtc plugin to use tactile sensor in controller via ROS interface
 ### Dependencies
 - [mc_rtc](https://jrl-umi3218.github.io/mc_rtc)
 - [isri-aist/MujocoTactileSensorPlugin](https://github.com/isri-aist/MujocoTactileSensorPlugin) (Install as a ROS package)
-- `ros-${ROS_DISTRO}-eigen-conversions`
+- [eSkinRosUtils](https://github.com/isri-aist/eSkinRosUtils)
+   - An option to build without dependency on the e-Skin tactile sensor is also supported.
 
 ### Installation procedure
 ```bash
@@ -23,7 +24,7 @@ $ mkdir ${HOME}/src && cd ${HOME}/src
 $ git clone git@github.com:isri-aist/McRtcTactileSensorPlugin.git --recursive
 $ cd McRtcTactileSensorPlugin
 $ mkdir build && cd build
-$ cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
+$ cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo # Add "-DENABLE_ESKIN=OFF" option if you do not use e-Skin tactile sensor
 $ make
 $ make install
 ```
@@ -42,7 +43,8 @@ Plugins: [TactileSensor]
 Put the following lines in the plugin configuration (e.g. `${HOME}/.config/mc_rtc/plugins/TactileSensor.yaml`).
 ```yaml
 sensors:
-  - topicName: /mujoco/tactile_sensor
+  - msgType: mujoco # "mujoco" or "eskin"
+    topicName: /mujoco/tactile_sensor
     tactileSensorFrameName: jvrc1_right_elbow_tactile_sensor
     forceSensorName: RightElbowForceSensor
 ```
