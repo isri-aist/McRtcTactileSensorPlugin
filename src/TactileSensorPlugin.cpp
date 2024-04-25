@@ -175,7 +175,7 @@ void TactileSensorPlugin::before(mc_control::MCGlobalController & gc)
         Eigen::Quaterniond quat;
         tf::pointMsgToEigen(cellMsg.pose.position, position);
         tf::quaternionMsgToEigen(cellMsg.pose.orientation, quat);
-        Eigen::Vector3d normal = quat.toRotationMatrix().col(2);
+        Eigen::Vector3d normal = -1.0 * quat.toRotationMatrix().col(2);
         // \todo Calibrate force measurements from e-Skin
         Eigen::Vector3d force = 10.0 * (cellMsg.forces[0] + cellMsg.forces[1] + cellMsg.forces[2]) * normal;
         Eigen::Vector3d moment = position.cross(force);
