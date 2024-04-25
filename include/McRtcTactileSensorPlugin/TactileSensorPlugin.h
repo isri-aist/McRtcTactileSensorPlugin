@@ -5,7 +5,9 @@
 #include <ros/callback_queue.h>
 #include <ros/ros.h>
 
-#include <eskin_ros_utils/PatchData.h>
+#ifdef ENABLE_ESKIN
+#  include <eskin_ros_utils/PatchData.h>
+#endif
 #include <mujoco_tactile_sensor_plugin/TactileSensorData.h>
 #include <variant>
 
@@ -66,20 +68,26 @@ protected:
   void mujocoSensorCallback(const mujoco_tactile_sensor_plugin::TactileSensorData::ConstPtr & sensorMsg,
                             size_t sensorIdx);
 
+#ifdef ENABLE_ESKIN
   /** \brief ROS callback of tactile sensor topic from e-Skin.
-      \param sensorMsg sensor message
-      \param sensorIdx sensor index
-   */
+        \param sensorMsg sensor message
+        \param sensorIdx sensor index
+     */
   void eskinSensorCallback(const eskin_ros_utils::PatchData::ConstPtr & sensorMsg, size_t sensorIdx);
+#endif
 
 protected:
   //! Sensor information list
   std::vector<SensorInfo> sensorInfoList_;
 
   //! Sensor message list
+#ifdef ENABLE_ESKIN
   std::vector<std::variant<std::nullptr_t,
                            std::shared_ptr<mujoco_tactile_sensor_plugin::TactileSensorData>,
                            std::shared_ptr<eskin_ros_utils::PatchData>>>
+#else
+  std::vector<std::variant<std::nullptr_t, std::shared_ptr<mujoco_tactile_sensor_plugin::TactileSensorData>>>
+#endif
       sensorMsgList_;
 
   //! ROS variables

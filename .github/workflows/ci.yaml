@@ -65,7 +65,7 @@ jobs:
         uses: jrl-umi3218/github-actions/build-cmake-project@master
         with:
           build-type: ${{ matrix.build-type }}
-          options: -DINSTALL_DOCUMENTATION=${{ env.UPLOAD_DOCUMENTATION }}
+          options: -DENABLE_ESKIN=OFF -DINSTALL_DOCUMENTATION=${{ env.UPLOAD_DOCUMENTATION }}
       - name: Upload documentation
         if: env.UPLOAD_DOCUMENTATION == 'true'
         run: |

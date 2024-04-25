@@ -40,7 +40,12 @@ void TactileSensorPlugin::init(mc_control::MCGlobalController & gc, const mc_rtc
       }
       else if(msgTypeStr == "eskin")
       {
+#ifdef ENABLE_ESKIN
         sensorInfo.msgType = MsgType::Eskin;
+#else
+        mc_rtc::log::error_and_throw(
+            "[mc_plugin::TactileSensorPlugin] e-Skin is disabled. Rebuild with the \"-DENABLE_ESKIN=ON\" option.");
+#endif
       }
       else
       {
@@ -92,12 +97,14 @@ void TactileSensorPlugin::init(mc_control::MCGlobalController & gc, const mc_rtc
           sensorInfoList_[sensorIdx].topicName, 1,
           std::bind(&TactileSensorPlugin::mujocoSensorCallback, this, std::placeholders::_1, sensorIdx)));
     }
+#ifdef ENABLE_ESKIN
     else // if(sensorInfoList_[sensorIdx].msgType == MsgType::Eskin)
     {
       sensorSubList_.push_back(nh_->subscribe<eskin_ros_utils::PatchData>(
           sensorInfoList_[sensorIdx].topicName, 1,
           std::bind(&TactileSensorPlugin::eskinSensorCallback, this, std::placeholders::_1, sensorIdx)));
     }
+#endif
   }
 
   reset(gc);
@@ -156,6 +163,7 @@ void TactileSensorPlugin::before(mc_control::MCGlobalController & gc)
       sva::PTransformd tactileToForceTrans = forceSensorPose * tactileSensorPose.inv();
       wrench = tactileToForceTrans.dualMul(wrench);
     }
+#ifdef ENABLE_ESKIN
     else if(std::holds_alternative<std::shared_ptr<eskin_ros_utils::PatchData>>(sensorMsgList_[sensorIdx]))
     {
       const auto & sensorMsg = std::get<std::shared_ptr<eskin_ros_utils::PatchData>>(sensorMsgList_[sensorIdx]);
@@ -181,6 +189,7 @@ void TactileSensorPlugin::before(mc_control::MCGlobalController & gc)
       sva::PTransformd tactileToForceTrans = forceSensorPose * tactileSensorPose.inv();
       wrench = tactileToForceTrans.dualMul(wrench);
     }
+#endif
     forceSensor.wrench(wrench);
   }
 }
@@ -192,10 +201,12 @@ void TactileSensorPlugin::mujocoSensorCallback(
   sensorMsgList_[sensorIdx] = std::make_shared<mujoco_tactile_sensor_plugin::TactileSensorData>(*sensorMsg);
 }
 
+#ifdef ENABLE_ESKIN
 void TactileSensorPlugin::eskinSensorCallback(const eskin_ros_utils::PatchData::ConstPtr & sensorMsg, size_t sensorIdx)
 {
   sensorMsgList_[sensorIdx] = std::make_shared<eskin_ros_utils::PatchData>(*sensorMsg);
 }
+#endif
 } // namespace mc_plugin
 
 EXPORT_MC_RTC_PLUGIN("TactileSensor", mc_plugin::TactileSensorPlugin)

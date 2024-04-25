@@ -14,6 +14,7 @@ set(CXX_DISABLE_WERROR ON)
 set(CMAKE_COLOR_DIAGNOSTICS ON)
 
 option(INSTALL_DOCUMENTATION "Generate and install the documentation" OFF)
+option(ENABLE_ESKIN "Enable e-Skin tactile sensor" ON)
 
 include(cmake/base.cmake)
 project(${PROJECT_NAME} LANGUAGES CXX)
@@ -31,7 +32,12 @@ pkg_check_modules(eigen_conversions REQUIRED IMPORTED_TARGET eigen_conversions)
 find_package(PkgConfig)
 pkg_check_modules(mujoco_tactile_sensor_plugin REQUIRED IMPORTED_TARGET
                   mujoco_tactile_sensor_plugin)
-pkg_check_modules(eskin_ros_utils REQUIRED IMPORTED_TARGET eskin_ros_utils)
+if(ENABLE_ESKIN)
+  pkg_check_modules(eskin_ros_utils REQUIRED IMPORTED_TARGET eskin_ros_utils)
+  message("-- Enable e-Skin")
+else()
+  message("-- Disable e-Skin")
+endif()
 
 install(FILES etc/TactileSensor.yaml
         DESTINATION "${MC_PLUGINS_RUNTIME_INSTALL_PREFIX}/etc")
