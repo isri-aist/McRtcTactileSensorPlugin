@@ -98,6 +98,13 @@ $(function() {
 <div class="line">$ cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo # Add &quot;-DENABLE_ESKIN=OFF&quot; option if you do not use e-Skin tactile sensor</div>
 <div class="line">$ make</div>
 <div class="line">$ make install</div>
+</div><!-- fragment --><h3>Note on cmake error regarding e-Skin's ROS packages</h3>
+<p>If you encounter the following error in cmake, </p><div class="fragment"><div class="line">Make Error in src/CMakeLists.txt:</div>
+<div class="line">  Imported target &quot;PkgConfig::eskin_ros_utils&quot; includes non-existent path</div>
+<div class="line">    &quot;/work/install/include&quot;</div>
+<div class="line">  in its INTERFACE_INCLUDE_DIRECTORIES.</div>
+</div><!-- fragment --><p>the following commands may be useful in resolving the error. </p><div class="fragment"><div class="line">sudo sed -i &quot;s@/work/install@/opt/ros/noetic@g&quot; /opt/ros/${ROS_DISTRO}/share/itr_ros_*/cmake/*.cmake</div>
+<div class="line">sudo sed -i &quot;s@/work/install@/opt/ros/noetic@g&quot; /opt/ros/${ROS_DISTRO}/lib/pkgconfig/itr_ros_*.pc</div>
 </div><!-- fragment --><h1>Plugins</h1>
 <h2>TactileSensor</h2>
 <p>This plugin receives tactile sensor data via ROS topic and sets wrench on the robot's force sensor in mc_rtc controller.</p>
