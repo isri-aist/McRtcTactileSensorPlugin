@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.13)
 
 set(PROJECT_NAME McRtcTactileSensorPlugin)
 set(PROJECT_VERSION 0.1.0)
@@ -31,6 +31,7 @@ pkg_check_modules(eigen_conversions REQUIRED IMPORTED_TARGET eigen_conversions)
 find_package(PkgConfig)
 pkg_check_modules(mujoco_tactile_sensor_plugin REQUIRED IMPORTED_TARGET
                   mujoco_tactile_sensor_plugin)
+pkg_check_modules(eskin_ros_utils REQUIRED IMPORTED_TARGET eskin_ros_utils)
 
 install(FILES etc/TactileSensor.yaml
         DESTINATION "${MC_PLUGINS_RUNTIME_INSTALL_PREFIX}/etc")

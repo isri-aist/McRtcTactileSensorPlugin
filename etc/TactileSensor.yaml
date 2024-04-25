@@ -1,4 +1,5 @@
 sensors:
-  - topicName: topicName
+  - msgType: mujoco # "mujoco" or "eskin"
+    topicName: topicName
     tactileSensorFrameName: tactileSensorFrameName
     forceSensorName: forceSensorName

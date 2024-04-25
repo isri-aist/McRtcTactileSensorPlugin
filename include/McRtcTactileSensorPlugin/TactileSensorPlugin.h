@@ -5,7 +5,9 @@
 #include <ros/callback_queue.h>
 #include <ros/ros.h>
 
+#include <eskin_ros_utils/PatchData.h>
 #include <mujoco_tactile_sensor_plugin/TactileSensorData.h>
+#include <variant>
 
 namespace mc_plugin
 {
@@ -14,9 +16,22 @@ namespace mc_plugin
 struct TactileSensorPlugin : public mc_control::GlobalPlugin
 {
 protected:
-  //! Sensor information
+  /** \brief ROS message type for tactile sensor. */
+  enum class MsgType
+  {
+    //! Message from the tactile sensor plugin in MuJoCo
+    Mujoco = 0,
+
+    //! Message from the e-Skin tactile sensor via eSkinRosUtils
+    Eskin
+  };
+
+  /** \brief Sensor information. */
   struct SensorInfo
   {
+    //! Message type
+    MsgType msgType = MsgType::Mujoco;
+
     //! Topic name
     std::string topicName;
 
@@ -44,18 +59,28 @@ public:
   inline void after(mc_control::MCGlobalController & gc) override{};
 
 protected:
-  /** \brief ROS callback of sensor topic.
+  /** \brief ROS callback of tactile sensor topic from MuJoCo.
       \param sensorMsg sensor message
       \param sensorIdx sensor index
    */
-  void sensorCallback(const mujoco_tactile_sensor_plugin::TactileSensorData::ConstPtr & sensorMsg, size_t sensorIdx);
+  void mujocoSensorCallback(const mujoco_tactile_sensor_plugin::TactileSensorData::ConstPtr & sensorMsg,
+                            size_t sensorIdx);
+
+  /** \brief ROS callback of tactile sensor topic from e-Skin.
+      \param sensorMsg sensor message
+      \param sensorIdx sensor index
+   */
+  void eskinSensorCallback(const eskin_ros_utils::PatchData::ConstPtr & sensorMsg, size_t sensorIdx);
 
 protected:
   //! Sensor information list
   std::vector<SensorInfo> sensorInfoList_;
 
   //! Sensor message list
-  std::vector<std::shared_ptr<mujoco_tactile_sensor_plugin::TactileSensorData>> sensorMsgList_;
+  std::vector<std::variant<std::nullptr_t,
+                           std::shared_ptr<mujoco_tactile_sensor_plugin::TactileSensorData>,
+                           std::shared_ptr<eskin_ros_utils::PatchData>>>
+      sensorMsgList_;
 
   //! ROS variables
   //! @{
