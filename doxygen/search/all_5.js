@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['mc_5fplugin_6',['mc_plugin',['../namespacemc__plugin.html',1,'']]]
+  ['init_6',['init',['../structmc__plugin_1_1TactileSensorPlugin.html#ad3cb2902e59dba61be9127e67f93fe70',1,'mc_plugin::TactileSensorPlugin']]]
 ];

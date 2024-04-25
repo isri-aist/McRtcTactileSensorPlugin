@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['nh_5f_32',['nh_',['../structmc__plugin_1_1TactileSensorPlugin.html#aba7da7c9d96f1fb98811af2e6850bb9d',1,'mc_plugin::TactileSensorPlugin']]]
+  ['msgtype_35',['msgType',['../structmc__plugin_1_1TactileSensorPlugin_1_1SensorInfo.html#a954e51a397871754e1e89a7a17be5fbc',1,'mc_plugin::TactileSensorPlugin::SensorInfo']]]
 ];

@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['tactilesensorframename_15',['tactileSensorFrameName',['../structmc__plugin_1_1TactileSensorPlugin_1_1SensorInfo.html#a31bc7a4e2694fcf74affe5872e3d08c6',1,'mc_plugin::TactileSensorPlugin::SensorInfo']]],
-  ['tactilesensorplugin_16',['TactileSensorPlugin',['../structmc__plugin_1_1TactileSensorPlugin.html',1,'mc_plugin']]],
-  ['tactilesensorplugin_2eh_17',['TactileSensorPlugin.h',['../TactileSensorPlugin_8h.html',1,'']]],
-  ['topicname_18',['topicName',['../structmc__plugin_1_1TactileSensorPlugin_1_1SensorInfo.html#a8c0bee487f2cdcaa525c30fdfe41da7a',1,'mc_plugin::TactileSensorPlugin::SensorInfo']]]
+  ['sensorinfo_14',['SensorInfo',['../structmc__plugin_1_1TactileSensorPlugin_1_1SensorInfo.html',1,'mc_plugin::TactileSensorPlugin']]],
+  ['sensorinfolist_5f_15',['sensorInfoList_',['../structmc__plugin_1_1TactileSensorPlugin.html#a8b7d1f495e05a00540694bd022e9f5fc',1,'mc_plugin::TactileSensorPlugin']]],
+  ['sensormsglist_5f_16',['sensorMsgList_',['../structmc__plugin_1_1TactileSensorPlugin.html#a1e0d015613fdd924c0122dec87a2eaed',1,'mc_plugin::TactileSensorPlugin']]],
+  ['sensorsublist_5f_17',['sensorSubList_',['../structmc__plugin_1_1TactileSensorPlugin.html#ae19f970f20882c4f456c212f0ec3c11e',1,'mc_plugin::TactileSensorPlugin']]]
 ];

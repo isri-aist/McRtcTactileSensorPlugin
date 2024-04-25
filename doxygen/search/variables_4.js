@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['tactilesensorframename_36',['tactileSensorFrameName',['../structmc__plugin_1_1TactileSensorPlugin_1_1SensorInfo.html#a31bc7a4e2694fcf74affe5872e3d08c6',1,'mc_plugin::TactileSensorPlugin::SensorInfo']]],
-  ['topicname_37',['topicName',['../structmc__plugin_1_1TactileSensorPlugin_1_1SensorInfo.html#a8c0bee487f2cdcaa525c30fdfe41da7a',1,'mc_plugin::TactileSensorPlugin::SensorInfo']]]
+  ['sensorinfolist_5f_37',['sensorInfoList_',['../structmc__plugin_1_1TactileSensorPlugin.html#a8b7d1f495e05a00540694bd022e9f5fc',1,'mc_plugin::TactileSensorPlugin']]],
+  ['sensormsglist_5f_38',['sensorMsgList_',['../structmc__plugin_1_1TactileSensorPlugin.html#a1e0d015613fdd924c0122dec87a2eaed',1,'mc_plugin::TactileSensorPlugin']]],
+  ['sensorsublist_5f_39',['sensorSubList_',['../structmc__plugin_1_1TactileSensorPlugin.html#ae19f970f20882c4f456c212f0ec3c11e',1,'mc_plugin::TactileSensorPlugin']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['init_5',['init',['../structmc__plugin_1_1TactileSensorPlugin.html#ad3cb2902e59dba61be9127e67f93fe70',1,'mc_plugin::TactileSensorPlugin']]]
+  ['forcesensorname_5',['forceSensorName',['../structmc__plugin_1_1TactileSensorPlugin_1_1SensorInfo.html#abf0a29c1db774458fd21f3befbc81e76',1,'mc_plugin::TactileSensorPlugin::SensorInfo']]]
 ];
