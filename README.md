@@ -29,6 +29,20 @@ $ make
 $ make install
 ```
 
+#### Note on cmake error regarding e-Skin's ROS packages
+If you encounter the following error in cmake,
+```bash
+Make Error in src/CMakeLists.txt:
+  Imported target "PkgConfig::eskin_ros_utils" includes non-existent path
+    "/work/install/include"
+  in its INTERFACE_INCLUDE_DIRECTORIES.
+```
+the following commands may be useful in resolving the error.
+```bash
+sudo sed -i "s@/work/install@/opt/ros/noetic@g" /opt/ros/${ROS_DISTRO}/share/itr_ros_*/cmake/*.cmake
+sudo sed -i "s@/work/install@/opt/ros/noetic@g" /opt/ros/${ROS_DISTRO}/lib/pkgconfig/itr_ros_*.pc
+```
+
 ## Plugins
 ### TactileSensor
 This plugin receives tactile sensor data via ROS topic and sets wrench on the robot's force sensor in mc_rtc controller.
