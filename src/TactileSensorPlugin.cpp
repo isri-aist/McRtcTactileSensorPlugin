@@ -36,11 +36,16 @@ void TactileSensorPlugin::init(mc_control::MCGlobalController & gc, const mc_rtc
       std::string msgTypeStr = sensorConfig("msgType");
       if(msgTypeStr == "mujoco")
       {
+#if ENABLE_MUJOCO
         sensorInfo.msgType = MsgType::Mujoco;
+#else
+        mc_rtc::log::error_and_throw(
+            "[mc_plugin::TactileSensorPlugin] MuJoCo is disabled. Rebuild with the \"-DENABLE_MUJOCO=ON\" option.");
+#endif
       }
       else if(msgTypeStr == "eskin")
       {
-#ifdef ENABLE_ESKIN
+#if ENABLE_ESKIN
         sensorInfo.msgType = MsgType::Eskin;
 #else
         mc_rtc::log::error_and_throw(
@@ -91,14 +96,16 @@ void TactileSensorPlugin::init(mc_control::MCGlobalController & gc, const mc_rtc
   sensorSubList_.clear();
   for(size_t sensorIdx = 0; sensorIdx < sensorInfoList_.size(); sensorIdx++)
   {
+#if ENABLE_MUJOCO
     if(sensorInfoList_[sensorIdx].msgType == MsgType::Mujoco)
     {
       sensorSubList_.push_back(nh_->subscribe<mujoco_tactile_sensor_plugin::TactileSensorData>(
           sensorInfoList_[sensorIdx].topicName, 1,
           std::bind(&TactileSensorPlugin::mujocoSensorCallback, this, std::placeholders::_1, sensorIdx)));
     }
-#ifdef ENABLE_ESKIN
-    else // if(sensorInfoList_[sensorIdx].msgType == MsgType::Eskin)
+#endif
+#if ENABLE_ESKIN
+    if(sensorInfoList_[sensorIdx].msgType == MsgType::Eskin)
     {
       sensorSubList_.push_back(nh_->subscribe<eskin_ros_utils::PatchData>(
           sensorInfoList_[sensorIdx].topicName, 1,
@@ -138,6 +145,7 @@ void TactileSensorPlugin::before(mc_control::MCGlobalController & gc)
     {
       // Do nothing
     }
+#if ENABLE_MUJOCO
     else if(std::holds_alternative<std::shared_ptr<mujoco_tactile_sensor_plugin::TactileSensorData>>(
                 sensorMsgList_[sensorIdx]))
     {
@@ -163,7 +171,8 @@ void TactileSensorPlugin::before(mc_control::MCGlobalController & gc)
       sva::PTransformd tactileToForceTrans = forceSensorPose * tactileSensorPose.inv();
       wrench = tactileToForceTrans.dualMul(wrench);
     }
-#ifdef ENABLE_ESKIN
+#endif
+#if ENABLE_ESKIN
     else if(std::holds_alternative<std::shared_ptr<eskin_ros_utils::PatchData>>(sensorMsgList_[sensorIdx]))
     {
       const auto & sensorMsg = std::get<std::shared_ptr<eskin_ros_utils::PatchData>>(sensorMsgList_[sensorIdx]);
@@ -194,14 +203,16 @@ void TactileSensorPlugin::before(mc_control::MCGlobalController & gc)
   }
 }
 
+#if ENABLE_MUJOCO
 void TactileSensorPlugin::mujocoSensorCallback(
     const mujoco_tactile_sensor_plugin::TactileSensorData::ConstPtr & sensorMsg,
     size_t sensorIdx)
 {
   sensorMsgList_[sensorIdx] = std::make_shared<mujoco_tactile_sensor_plugin::TactileSensorData>(*sensorMsg);
 }
+#endif
 
-#ifdef ENABLE_ESKIN
+#if ENABLE_ESKIN
 void TactileSensorPlugin::eskinSensorCallback(const eskin_ros_utils::PatchData::ConstPtr & sensorMsg, size_t sensorIdx)
 {
   sensorMsgList_[sensorIdx] = std::make_shared<eskin_ros_utils::PatchData>(*sensorMsg);

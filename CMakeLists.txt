@@ -14,6 +14,7 @@ set(CXX_DISABLE_WERROR ON)
 set(CMAKE_COLOR_DIAGNOSTICS ON)
 
 option(INSTALL_DOCUMENTATION "Generate and install the documentation" OFF)
+option(ENABLE_MUJOCO "Enable MuJoCo tactile sensor" ON)
 option(ENABLE_ESKIN "Enable e-Skin tactile sensor" ON)
 
 include(cmake/base.cmake)
@@ -28,11 +29,19 @@ endif()
 # eigen_conversions
 pkg_check_modules(eigen_conversions REQUIRED IMPORTED_TARGET eigen_conversions)
 
-# mujoco_tactile_sensor_plugin
 find_package(PkgConfig)
-pkg_check_modules(mujoco_tactile_sensor_plugin REQUIRED IMPORTED_TARGET
-                  mujoco_tactile_sensor_plugin)
+
+if(ENABLE_MUJOCO)
+  # mujoco_tactile_sensor_plugin
+  pkg_check_modules(mujoco_tactile_sensor_plugin REQUIRED IMPORTED_TARGET
+                    mujoco_tactile_sensor_plugin)
+  message("-- Enable MuJoCo")
+else()
+  message("-- Disable MuJoCo")
+endif()
+
 if(ENABLE_ESKIN)
+  # eskin_ros_utils
   pkg_check_modules(eskin_ros_utils REQUIRED IMPORTED_TARGET eskin_ros_utils)
   message("-- Enable e-Skin")
 else()

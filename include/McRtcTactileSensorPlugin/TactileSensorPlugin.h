@@ -5,10 +5,12 @@
 #include <ros/callback_queue.h>
 #include <ros/ros.h>
 
-#ifdef ENABLE_ESKIN
+#if ENABLE_ESKIN
 #  include <eskin_ros_utils/PatchData.h>
 #endif
-#include <mujoco_tactile_sensor_plugin/TactileSensorData.h>
+#if ENABLE_MUJOCO
+#  include <mujoco_tactile_sensor_plugin/TactileSensorData.h>
+#endif
 #include <variant>
 
 namespace mc_plugin
@@ -61,14 +63,16 @@ public:
   inline void after(mc_control::MCGlobalController & gc) override{};
 
 protected:
+#if ENABLE_MUJOCO
   /** \brief ROS callback of tactile sensor topic from MuJoCo.
       \param sensorMsg sensor message
       \param sensorIdx sensor index
    */
   void mujocoSensorCallback(const mujoco_tactile_sensor_plugin::TactileSensorData::ConstPtr & sensorMsg,
                             size_t sensorIdx);
+#endif
 
-#ifdef ENABLE_ESKIN
+#if ENABLE_ESKIN
   /** \brief ROS callback of tactile sensor topic from e-Skin.
         \param sensorMsg sensor message
         \param sensorIdx sensor index
@@ -81,12 +85,16 @@ protected:
   std::vector<SensorInfo> sensorInfoList_;
 
   //! Sensor message list
-#ifdef ENABLE_ESKIN
+#if ENABLE_MUJOCO && ENABLE_ESKIN
   std::vector<std::variant<std::nullptr_t,
                            std::shared_ptr<mujoco_tactile_sensor_plugin::TactileSensorData>,
                            std::shared_ptr<eskin_ros_utils::PatchData>>>
-#else
+#elif ENABLE_MUJOCO && !ENABLE_ESKIN
   std::vector<std::variant<std::nullptr_t, std::shared_ptr<mujoco_tactile_sensor_plugin::TactileSensorData>>>
+#elif !ENABLE_MUJOCO && ENABLE_ESKIN
+  std::vector<std::variant<std::nullptr_t, std::shared_ptr<eskin_ros_utils::PatchData>>>
+#else
+  std::vector<std::variant<std::nullptr_t>>
 #endif
       sensorMsgList_;
 
