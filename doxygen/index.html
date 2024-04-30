@@ -83,7 +83,10 @@ $(function() {
 <h2>Dependencies</h2>
 <ul>
 <li><a href="https://jrl-umi3218.github.io/mc_rtc">mc_rtc</a></li>
-<li><a href="https://github.com/isri-aist/MujocoTactileSensorPlugin">isri-aist/MujocoTactileSensorPlugin</a> (Install as a ROS package)</li>
+<li><a href="https://github.com/isri-aist/MujocoTactileSensorPlugin">isri-aist/MujocoTactileSensorPlugin</a> (Install as a ROS package)<ul>
+<li>An option to build without dependency on the MuJoCo tactile sensor is also supported.</li>
+</ul>
+</li>
 <li><a href="https://github.com/isri-aist/eSkinRosUtils">eSkinRosUtils</a><ul>
 <li>An option to build without dependency on the e-Skin tactile sensor is also supported.</li>
 </ul>
@@ -95,7 +98,7 @@ $(function() {
 <div class="line">$ git clone git@github.com:isri-aist/McRtcTactileSensorPlugin.git --recursive</div>
 <div class="line">$ cd McRtcTactileSensorPlugin</div>
 <div class="line">$ mkdir build &amp;&amp; cd build</div>
-<div class="line">$ cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo # Add &quot;-DENABLE_ESKIN=OFF&quot; option if you do not use e-Skin tactile sensor</div>
+<div class="line">$ cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo # Add &quot;-DENABLE_MUJOCO=OFF&quot; or &quot;-DENABLE_ESKIN=OFF&quot; options if necessary</div>
 <div class="line">$ make</div>
 <div class="line">$ make install</div>
 </div><!-- fragment --><h3>Note on cmake error regarding e-Skin's ROS packages</h3>

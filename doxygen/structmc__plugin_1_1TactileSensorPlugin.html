@@ -76,7 +76,6 @@ $(function() {
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pro-types">Protected Types</a> &#124;
-<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="structmc__plugin_1_1TactileSensorPlugin-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -139,20 +138,14 @@ Protected Types</h2></td></tr>
 <tr class="memdesc:ab449b64f2a08d26e6d191bf8df95bea5"><td class="mdescLeft">&#160;</td><td class="mdescRight">ROS message type for tactile sensor.  <a href="structmc__plugin_1_1TactileSensorPlugin.html#ab449b64f2a08d26e6d191bf8df95bea5">More...</a><br /></td></tr>
 <tr class="separator:ab449b64f2a08d26e6d191bf8df95bea5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
-Protected Member Functions</h2></td></tr>
-<tr class="memitem:a676f0398e1f6b28bf442d731900111c4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmc__plugin_1_1TactileSensorPlugin.html#a676f0398e1f6b28bf442d731900111c4">mujocoSensorCallback</a> (const mujoco_tactile_sensor_plugin::TactileSensorData::ConstPtr &amp;sensorMsg, size_t sensorIdx)</td></tr>
-<tr class="memdesc:a676f0398e1f6b28bf442d731900111c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">ROS callback of tactile sensor topic from MuJoCo.  <a href="structmc__plugin_1_1TactileSensorPlugin.html#a676f0398e1f6b28bf442d731900111c4">More...</a><br /></td></tr>
-<tr class="separator:a676f0398e1f6b28bf442d731900111c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
 <tr class="memitem:a8b7d1f495e05a00540694bd022e9f5fc"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structmc__plugin_1_1TactileSensorPlugin_1_1SensorInfo.html">SensorInfo</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmc__plugin_1_1TactileSensorPlugin.html#a8b7d1f495e05a00540694bd022e9f5fc">sensorInfoList_</a></td></tr>
 <tr class="memdesc:a8b7d1f495e05a00540694bd022e9f5fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sensor information list.  <a href="structmc__plugin_1_1TactileSensorPlugin.html#a8b7d1f495e05a00540694bd022e9f5fc">More...</a><br /></td></tr>
 <tr class="separator:a8b7d1f495e05a00540694bd022e9f5fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1e0d015613fdd924c0122dec87a2eaed"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::variant&lt; std::nullptr_t, std::shared_ptr&lt; mujoco_tactile_sensor_plugin::TactileSensorData &gt; &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmc__plugin_1_1TactileSensorPlugin.html#a1e0d015613fdd924c0122dec87a2eaed">sensorMsgList_</a></td></tr>
-<tr class="memdesc:a1e0d015613fdd924c0122dec87a2eaed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sensor message list.  <a href="structmc__plugin_1_1TactileSensorPlugin.html#a1e0d015613fdd924c0122dec87a2eaed">More...</a><br /></td></tr>
-<tr class="separator:a1e0d015613fdd924c0122dec87a2eaed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a214af9e54522e69d53b429061a1cdad0"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::variant&lt; std::nullptr_t &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmc__plugin_1_1TactileSensorPlugin.html#a214af9e54522e69d53b429061a1cdad0">sensorMsgList_</a></td></tr>
+<tr class="memdesc:a214af9e54522e69d53b429061a1cdad0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sensor message list.  <a href="structmc__plugin_1_1TactileSensorPlugin.html#a214af9e54522e69d53b429061a1cdad0">More...</a><br /></td></tr>
+<tr class="separator:a214af9e54522e69d53b429061a1cdad0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader"></div></td></tr>
 <tr class="memitem:aba7da7c9d96f1fb98811af2e6850bb9d"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; ros::NodeHandle &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmc__plugin_1_1TactileSensorPlugin.html#aba7da7c9d96f1fb98811af2e6850bb9d">nh_</a></td></tr>
 <tr class="separator:aba7da7c9d96f1fb98811af2e6850bb9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -164,7 +157,7 @@ Protected Attributes</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Tactile sensor plugin. </p>
 
-<p class="definition">Definition at line <a class="el" href="TactileSensorPlugin_8h_source.html#l00018">18</a> of file <a class="el" href="TactileSensorPlugin_8h_source.html">TactileSensorPlugin.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="TactileSensorPlugin_8h_source.html#l00020">20</a> of file <a class="el" href="TactileSensorPlugin_8h_source.html">TactileSensorPlugin.h</a>.</p>
 </div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a id="ab449b64f2a08d26e6d191bf8df95bea5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab449b64f2a08d26e6d191bf8df95bea5">&#9670;&nbsp;</a></span>MsgType</h2>
@@ -194,7 +187,7 @@ Protected Attributes</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="TactileSensorPlugin_8h_source.html#l00022">22</a> of file <a class="el" href="TactileSensorPlugin_8h_source.html">TactileSensorPlugin.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="TactileSensorPlugin_8h_source.html#l00024">24</a> of file <a class="el" href="TactileSensorPlugin_8h_source.html">TactileSensorPlugin.h</a>.</p>
 
 </div>
 </div>
@@ -225,7 +218,7 @@ Protected Attributes</h2></td></tr>
 
 <p>Run after mc_control::MCGlobalController::run() </p>
 
-<p class="definition">Definition at line <a class="el" href="TactileSensorPlugin_8h_source.html#l00061">61</a> of file <a class="el" href="TactileSensorPlugin_8h_source.html">TactileSensorPlugin.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="TactileSensorPlugin_8h_source.html#l00063">63</a> of file <a class="el" href="TactileSensorPlugin_8h_source.html">TactileSensorPlugin.h</a>.</p>
 
 </div>
 </div>
@@ -322,51 +315,6 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a676f0398e1f6b28bf442d731900111c4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a676f0398e1f6b28bf442d731900111c4">&#9670;&nbsp;</a></span>mujocoSensorCallback()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void mc_plugin::TactileSensorPlugin::mujocoSensorCallback </td>
-          <td>(</td>
-          <td class="paramtype">const mujoco_tactile_sensor_plugin::TactileSensorData::ConstPtr &amp;&#160;</td>
-          <td class="paramname"><em>sensorMsg</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>sensorIdx</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>ROS callback of tactile sensor topic from MuJoCo. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">sensorMsg</td><td>sensor message </td></tr>
-    <tr><td class="paramname">sensorIdx</td><td>sensor index </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
 <a id="a53ad5220c4cd394937418f0e01736037"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a53ad5220c4cd394937418f0e01736037">&#9670;&nbsp;</a></span>reset()</h2>
 
@@ -417,7 +365,7 @@ Protected Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p>ROS variables </p>
 
-<p class="definition">Definition at line <a class="el" href="TactileSensorPlugin_8h_source.html#l00096">96</a> of file <a class="el" href="TactileSensorPlugin_8h_source.html">TactileSensorPlugin.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="TactileSensorPlugin_8h_source.html#l00104">104</a> of file <a class="el" href="TactileSensorPlugin_8h_source.html">TactileSensorPlugin.h</a>.</p>
 
 </div>
 </div>
@@ -442,7 +390,7 @@ Protected Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p>ROS variables </p>
 
-<p class="definition">Definition at line <a class="el" href="TactileSensorPlugin_8h_source.html#l00095">95</a> of file <a class="el" href="TactileSensorPlugin_8h_source.html">TactileSensorPlugin.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="TactileSensorPlugin_8h_source.html#l00103">103</a> of file <a class="el" href="TactileSensorPlugin_8h_source.html">TactileSensorPlugin.h</a>.</p>
 
 </div>
 </div>
@@ -468,12 +416,12 @@ Protected Attributes</h2></td></tr>
 
 <p>Sensor information list. </p>
 
-<p class="definition">Definition at line <a class="el" href="TactileSensorPlugin_8h_source.html#l00081">81</a> of file <a class="el" href="TactileSensorPlugin_8h_source.html">TactileSensorPlugin.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="TactileSensorPlugin_8h_source.html#l00063">63</a> of file <a class="el" href="TactileSensorPlugin_8h_source.html">TactileSensorPlugin.h</a>.</p>
 
 </div>
 </div>
-<a id="a1e0d015613fdd924c0122dec87a2eaed"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1e0d015613fdd924c0122dec87a2eaed">&#9670;&nbsp;</a></span>sensorMsgList_</h2>
+<a id="a214af9e54522e69d53b429061a1cdad0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a214af9e54522e69d53b429061a1cdad0">&#9670;&nbsp;</a></span>sensorMsgList_</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -482,7 +430,7 @@ Protected Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;std::variant&lt;std::nullptr_t, std::shared_ptr&lt;mujoco_tactile_sensor_plugin::TactileSensorData&gt; &gt; &gt; mc_plugin::TactileSensorPlugin::sensorMsgList_</td>
+          <td class="memname">std::vector&lt;std::variant&lt;std::nullptr_t&gt; &gt; mc_plugin::TactileSensorPlugin::sensorMsgList_</td>
         </tr>
       </table>
   </td>
@@ -494,7 +442,7 @@ Protected Attributes</h2></td></tr>
 
 <p>Sensor message list. </p>
 
-<p class="definition">Definition at line <a class="el" href="TactileSensorPlugin_8h_source.html#l00091">91</a> of file <a class="el" href="TactileSensorPlugin_8h_source.html">TactileSensorPlugin.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="TactileSensorPlugin_8h_source.html#l00099">99</a> of file <a class="el" href="TactileSensorPlugin_8h_source.html">TactileSensorPlugin.h</a>.</p>
 
 </div>
 </div>
@@ -519,7 +467,7 @@ Protected Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p>ROS variables </p>
 
-<p class="definition">Definition at line <a class="el" href="TactileSensorPlugin_8h_source.html#l00097">97</a> of file <a class="el" href="TactileSensorPlugin_8h_source.html">TactileSensorPlugin.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="TactileSensorPlugin_8h_source.html#l00105">105</a> of file <a class="el" href="TactileSensorPlugin_8h_source.html">TactileSensorPlugin.h</a>.</p>
 
 </div>
 </div>
