@@ -46,6 +46,9 @@ protected:
 
     //! Force scale (this value is multiplied to the tactile measurement value)
     double forceScale = 1.0;
+
+    //! Force threshold for determining contact in each cell [N]
+    double contactForceThre = 3.0;
   };
 
   /** \brief Sensor data. */
@@ -53,6 +56,9 @@ protected:
   {
     //! Wrench (represented in the frame of tactile sensor)
     sva::ForceVecd wrench = sva::ForceVecd::Zero();
+
+    //! Vertices of the convex hull of the contact region (represented in the frame of tactile sensor)
+    std::vector<Eigen::Vector3d> convexVertices;
   };
 
 public:
@@ -72,6 +78,10 @@ public:
   inline void after(mc_control::MCGlobalController & gc) override{};
 
 protected:
+  /** \brief Set datastore entry. */
+  template<class ValueType>
+  void setDatastore(mc_rtc::DataStore & datastore, const std::string & key, const ValueType & value);
+
 #if ENABLE_MUJOCO
   /** \brief ROS callback of tactile sensor topic from MuJoCo.
       \param sensorMsg sensor message

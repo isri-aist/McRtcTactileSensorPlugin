@@ -1,8 +1,32 @@
 #include <mc_control/GlobalPluginMacros.h>
+#include <mc_rtc/DataStore.h>
 
 #include <McRtcTactileSensorPlugin/TactileSensorPlugin.h>
 #include <eigen_conversions/eigen_msg.h>
 #include <functional>
+
+namespace
+{
+std::vector<Eigen::Vector3d> getRectVertices(const std::vector<Eigen::Vector3d> & points)
+{
+  if(points.empty())
+  {
+    return {};
+  }
+
+  Eigen::Vector2d vertexMin = Eigen::Vector2d::Constant(std::numeric_limits<double>::max());
+  Eigen::Vector2d vertexMax = Eigen::Vector2d::Constant(std::numeric_limits<double>::lowest());
+
+  for(const auto & point : points)
+  {
+    vertexMin = vertexMin.cwiseMin(point.head<2>());
+    vertexMax = vertexMax.cwiseMax(point.head<2>());
+  }
+
+  return {Eigen::Vector3d(vertexMax.x(), vertexMax.y(), 0.0), Eigen::Vector3d(vertexMin.x(), vertexMax.y(), 0.0),
+          Eigen::Vector3d(vertexMin.x(), vertexMin.y(), 0.0), Eigen::Vector3d(vertexMax.x(), vertexMin.y(), 0.0)};
+}
+} // namespace
 
 namespace mc_plugin
 {
@@ -91,6 +115,7 @@ void TactileSensorPlugin::init(mc_control::MCGlobalController & gc, const mc_rtc
     }
 
     sensorConfig("forceScale", sensorInfo.forceScale);
+    sensorConfig("contactForceThre", sensorInfo.contactForceThre);
 
     sensorInfoList_.push_back(sensorInfo);
   }
@@ -153,12 +178,36 @@ void TactileSensorPlugin::before(mc_control::MCGlobalController & gc)
       continue;
     }
 
-    // Transform wrench from tactile sensor frame to force sensor frame
+    // Transform from tactile sensor frame to force sensor frame
     sva::PTransformd tactileSensorPose = robot.frame(sensorInfo.tactileSensorFrameName).position();
     sva::PTransformd forceSensorPose = forceSensor.X_fsmodel_fsactual() * forceSensor.X_0_f(robot);
     sva::PTransformd tactileToForceTrans = forceSensorPose * tactileSensorPose.inv();
+
     sva::ForceVecd wrenchInForceSensorFrame = tactileToForceTrans.dualMul(sensorData->wrench);
     forceSensor.wrench(wrenchInForceSensorFrame);
+
+    std::vector<Eigen::Vector3d> convexVerticesInForceSensorFrame;
+    for(const auto & vertex : sensorData->convexVertices)
+    {
+      sva::PTransformd vertexPose =
+          sva::PTransformd(Eigen::Matrix3d::Identity(), Eigen::Vector3d(vertex.x(), vertex.y(), 0.0));
+      convexVerticesInForceSensorFrame.push_back((vertexPose * tactileToForceTrans.inv()).translation());
+    }
+    setDatastore<std::vector<Eigen::Vector3d>>(controller.datastore(), sensorInfo.forceSensorName + "::convexVertices",
+                                               convexVerticesInForceSensorFrame);
+  }
+}
+
+template<class ValueType>
+void TactileSensorPlugin::setDatastore(mc_rtc::DataStore & datastore, const std::string & key, const ValueType & value)
+{
+  if(datastore.has(key))
+  {
+    datastore.assign<ValueType>(key, value);
+  }
+  else
+  {
+    datastore.make<ValueType>(key, value);
   }
 }
 
@@ -171,6 +220,7 @@ void TactileSensorPlugin::mujocoSensorCallback(
   auto sensorData = std::make_shared<SensorData>();
 
   // Calculate wrench by integrating tactile sensor measurements
+  std::vector<Eigen::Vector3d> contactPoints;
   for(size_t i = 0; i < sensorMsg->forces.size(); i++)
   {
     Eigen::Vector3d position;
@@ -181,7 +231,14 @@ void TactileSensorPlugin::mujocoSensorCallback(
     Eigen::Vector3d moment = position.cross(force);
     sensorData->wrench.force() += force;
     sensorData->wrench.moment() += moment;
+
+    if(force.z() > sensorInfo.contactForceThre)
+    {
+      contactPoints.push_back(position);
+    }
   }
+
+  sensorData->convexVertices = getRectVertices(contactPoints);
 
   sensorDataList_[sensorIdx] = sensorData;
 }
@@ -194,6 +251,7 @@ void TactileSensorPlugin::eskinSensorCallback(const eskin_ros_utils::PatchData::
   auto sensorData = std::make_shared<SensorData>();
 
   // Calculate wrench by integrating tactile sensor measurements
+  std::vector<Eigen::Vector3d> contactPoints;
   for(const auto & cellMsg : sensorMsg->cells)
   {
     Eigen::Vector3d position;
@@ -207,7 +265,14 @@ void TactileSensorPlugin::eskinSensorCallback(const eskin_ros_utils::PatchData::
     Eigen::Vector3d moment = position.cross(force);
     sensorData->wrench.force() += force;
     sensorData->wrench.moment() += moment;
+
+    if(force.z() > sensorInfo.contactForceThre)
+    {
+      contactPoints.push_back(position);
+    }
   }
+
+  sensorData->convexVertices = getRectVertices(contactPoints);
 
   sensorDataList_[sensorIdx] = sensorData;
 }
