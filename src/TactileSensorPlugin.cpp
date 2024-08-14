@@ -27,6 +27,7 @@ void TactileSensorPlugin::init(mc_control::MCGlobalController & gc, const mc_rtc
     mc_rtc::log::error_and_throw(
         "[mc_plugin::TactileSensorPlugin] The \"sensors\" key must be specified in the configuration.");
   }
+
   for(const auto & sensorConfig : config("sensors"))
   {
     SensorInfo sensorInfo;
@@ -57,12 +58,14 @@ void TactileSensorPlugin::init(mc_control::MCGlobalController & gc, const mc_rtc
         mc_rtc::log::error_and_throw("[mc_plugin::TactileSensorPlugin] Unsupported message type: " + msgTypeStr);
       }
     }
+
     if(!sensorConfig.has("topicName"))
     {
       mc_rtc::log::error_and_throw(
           "[mc_plugin::TactileSensorPlugin] The \"topicName\" key must be specified in the sensor configuration.");
     }
     sensorInfo.topicName = static_cast<std::string>(sensorConfig("topicName"));
+
     if(!sensorConfig.has("tactileSensorFrameName"))
     {
       mc_rtc::log::error_and_throw("[mc_plugin::TactileSensorPlugin] The \"tactileSensorFrameName\" key must be "
@@ -74,6 +77,7 @@ void TactileSensorPlugin::init(mc_control::MCGlobalController & gc, const mc_rtc
       mc_rtc::log::error_and_throw("[mc_plugin::TactileSensorPlugin] No frame named \"{}\" exists.",
                                    sensorInfo.tactileSensorFrameName);
     }
+
     if(!sensorConfig.has("forceSensorName"))
     {
       mc_rtc::log::error_and_throw("[mc_plugin::TactileSensorPlugin] The \"forceSensorName\" key must be specified in "
