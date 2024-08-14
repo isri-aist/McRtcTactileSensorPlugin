@@ -90,6 +90,8 @@ void TactileSensorPlugin::init(mc_control::MCGlobalController & gc, const mc_rtc
                                    sensorInfo.forceSensorName);
     }
 
+    sensorConfig("forceScale", sensorInfo.forceScale);
+
     sensorInfoList_.push_back(sensorInfo);
   }
 
@@ -165,6 +167,7 @@ void TactileSensorPlugin::mujocoSensorCallback(
     const mujoco_tactile_sensor_plugin::TactileSensorData::ConstPtr & sensorMsg,
     size_t sensorIdx)
 {
+  const auto & sensorInfo = sensorInfoList_[sensorIdx];
   auto sensorData = std::make_shared<SensorData>();
 
   // Calculate wrench by integrating tactile sensor measurements
@@ -174,7 +177,7 @@ void TactileSensorPlugin::mujocoSensorCallback(
     Eigen::Vector3d normal;
     tf::pointMsgToEigen(sensorMsg->positions[i], position);
     tf::vectorMsgToEigen(sensorMsg->normals[i], normal);
-    Eigen::Vector3d force = sensorMsg->forces[i] * normal;
+    Eigen::Vector3d force = sensorInfo.forceScale * sensorMsg->forces[i] * normal;
     Eigen::Vector3d moment = position.cross(force);
     sensorData->wrench.force() += force;
     sensorData->wrench.moment() += moment;
@@ -187,6 +190,7 @@ void TactileSensorPlugin::mujocoSensorCallback(
 #if ENABLE_ESKIN
 void TactileSensorPlugin::eskinSensorCallback(const eskin_ros_utils::PatchData::ConstPtr & sensorMsg, size_t sensorIdx)
 {
+  const auto & sensorInfo = sensorInfoList_[sensorIdx];
   auto sensorData = std::make_shared<SensorData>();
 
   // Calculate wrench by integrating tactile sensor measurements
@@ -198,7 +202,8 @@ void TactileSensorPlugin::eskinSensorCallback(const eskin_ros_utils::PatchData::
     tf::quaternionMsgToEigen(cellMsg.pose.orientation, quat);
     Eigen::Vector3d normal = -1.0 * quat.toRotationMatrix().col(2);
     // Edit here to change the conversion calibration from e-Skin tactile measurements to force
-    Eigen::Vector3d force = 35.0 * (cellMsg.forces[0] + cellMsg.forces[1] + cellMsg.forces[2]) * normal;
+    Eigen::Vector3d force =
+        sensorInfo.forceScale * (cellMsg.forces[0] + cellMsg.forces[1] + cellMsg.forces[2]) * normal;
     Eigen::Vector3d moment = position.cross(force);
     sensorData->wrench.force() += force;
     sensorData->wrench.moment() += moment;

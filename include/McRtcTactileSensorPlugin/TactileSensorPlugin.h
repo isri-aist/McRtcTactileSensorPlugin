@@ -43,6 +43,9 @@ protected:
 
     //! Force sensor name
     std::string forceSensorName;
+
+    //! Force scale (this value is multiplied to the tactile measurement value)
+    double forceScale = 1.0;
   };
 
   /** \brief Sensor data. */
