@@ -11,7 +11,6 @@
 #if ENABLE_MUJOCO
 #  include <mujoco_tactile_sensor_plugin/TactileSensorData.h>
 #endif
-#include <variant>
 
 namespace mc_plugin
 {
@@ -44,6 +43,13 @@ protected:
 
     //! Force sensor name
     std::string forceSensorName;
+  };
+
+  /** \brief Sensor data. */
+  struct SensorData
+  {
+    //! Wrench (represented in the frame of tactile sensor)
+    sva::ForceVecd wrench = sva::ForceVecd::Zero();
   };
 
 public:
@@ -84,19 +90,8 @@ protected:
   //! Sensor information list
   std::vector<SensorInfo> sensorInfoList_;
 
-  //! Sensor message list
-#if ENABLE_MUJOCO && ENABLE_ESKIN
-  std::vector<std::variant<std::nullptr_t,
-                           std::shared_ptr<mujoco_tactile_sensor_plugin::TactileSensorData>,
-                           std::shared_ptr<eskin_ros_utils::PatchData>>>
-#elif ENABLE_MUJOCO && !ENABLE_ESKIN
-  std::vector<std::variant<std::nullptr_t, std::shared_ptr<mujoco_tactile_sensor_plugin::TactileSensorData>>>
-#elif !ENABLE_MUJOCO && ENABLE_ESKIN
-  std::vector<std::variant<std::nullptr_t, std::shared_ptr<eskin_ros_utils::PatchData>>>
-#else
-  std::vector<std::variant<std::nullptr_t>>
-#endif
-      sensorMsgList_;
+  //! Sensor data list
+  std::vector<std::shared_ptr<SensorData>> sensorDataList_;
 
   //! ROS variables
   //! @{
