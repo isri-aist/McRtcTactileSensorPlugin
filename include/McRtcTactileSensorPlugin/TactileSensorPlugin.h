@@ -49,6 +49,9 @@ protected:
 
     //! Force threshold for determining contact in each cell [N]
     double contactForceThre = 3.0;
+
+    //! Proximity threshold for determining contact in each cell
+    double contactProxThre = 1.0;
   };
 
   /** \brief Sensor data. */

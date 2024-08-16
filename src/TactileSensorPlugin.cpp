@@ -116,6 +116,7 @@ void TactileSensorPlugin::init(mc_control::MCGlobalController & gc, const mc_rtc
 
     sensorConfig("forceScale", sensorInfo.forceScale);
     sensorConfig("contactForceThre", sensorInfo.contactForceThre);
+    sensorConfig("contactProxThre", sensorInfo.contactProxThre);
 
     sensorInfoList_.push_back(sensorInfo);
   }
@@ -266,7 +267,7 @@ void TactileSensorPlugin::eskinSensorCallback(const eskin_ros_utils::PatchData::
     sensorData->wrench.force() += force;
     sensorData->wrench.moment() += moment;
 
-    if(force.z() > sensorInfo.contactForceThre)
+    if(force.z() > sensorInfo.contactForceThre || cellMsg.prox > sensorInfo.contactProxThre)
     {
       contactPoints.push_back(position);
     }
