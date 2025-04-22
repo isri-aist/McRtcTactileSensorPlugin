@@ -29,17 +29,23 @@ protected:
     Eskin
   };
 
+  /** \brief Tactile sensor information. */
+  struct TactileSensorInfo
+  {
+    //! Topic name
+    std::string topicName;
+
+    //! Frame name of tactile sensor
+    std::string tactileSensorFrameName;
+  };
+
   /** \brief Sensor information. */
   struct SensorInfo
   {
     //! Message type
     MsgType msgType = MsgType::Mujoco;
 
-    //! Topic name
-    std::string topicName;
-
-    //! Frame name of tactile sensor
-    std::string tactileSensorFrameName;
+    std::vector<TactileSensorInfo> tactileSensorInfoList;
 
     //! Force sensor name
     std::string forceSensorName;
@@ -54,14 +60,20 @@ protected:
     double contactProxThre = 1.0;
   };
 
-  /** \brief Sensor data. */
-  struct SensorData
+  /** \brief Tactile sensor data. */
+  struct TactileSensorData
   {
     //! Wrench (represented in the frame of tactile sensor)
     sva::ForceVecd wrench = sva::ForceVecd::Zero();
 
     //! Vertices of the convex hull of the contact region (represented in the frame of tactile sensor)
     std::vector<Eigen::Vector3d> convexVertices;
+  };
+
+  /** \brief Sensor data. */
+  struct SensorData
+  {
+    std::vector<TactileSensorData> tactileSensorDataList;
   };
 
 public:
@@ -89,17 +101,22 @@ protected:
   /** \brief ROS callback of tactile sensor topic from MuJoCo.
       \param sensorMsg sensor message
       \param sensorIdx sensor index
+      \param tactileSensorIdx tactile sensor index
    */
   void mujocoSensorCallback(const mujoco_tactile_sensor_plugin::TactileSensorData::ConstPtr & sensorMsg,
-                            size_t sensorIdx);
+                            size_t sensorIdx,
+                            size_t tactileSensorIdx);
 #endif
 
 #if ENABLE_ESKIN
   /** \brief ROS callback of tactile sensor topic from e-Skin.
-        \param sensorMsg sensor message
-        \param sensorIdx sensor index
+      \param sensorMsg sensor message
+      \param sensorIdx sensor index
+      \param tactileSensorIdx tactile sensor index
      */
-  void eskinSensorCallback(const eskin_ros_utils::PatchData::ConstPtr & sensorMsg, size_t sensorIdx);
+  void eskinSensorCallback(const eskin_ros_utils::PatchData::ConstPtr & sensorMsg,
+                           size_t sensorIdx,
+                           size_t tactileSensorIdx);
 #endif
 
 protected:
@@ -107,7 +124,7 @@ protected:
   std::vector<SensorInfo> sensorInfoList_;
 
   //! Sensor data list
-  std::vector<std::shared_ptr<SensorData>> sensorDataList_;
+  std::vector<SensorData> sensorDataList_;
 
   //! ROS variables
   //! @{
