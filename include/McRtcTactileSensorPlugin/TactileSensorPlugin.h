@@ -2,14 +2,15 @@
 
 #include <mc_control/GlobalPlugin.h>
 
-#include <ros/callback_queue.h>
-#include <ros/ros.h>
+#include <rclcpp/executors/single_threaded_executor.hpp>
+#include <rclcpp/rclcpp.hpp>
+#include <rclcpp/subscription_base.hpp>
 
 #if ENABLE_ESKIN
-#  include <eskin_ros_utils/PatchData.h>
+#  include <eskin_ros_utils/msg/patch_data.hpp>
 #endif
 #if ENABLE_MUJOCO
-#  include <mujoco_tactile_sensor_plugin/TactileSensorData.h>
+#  include <mujoco_tactile_sensor_plugin/msg/tactile_sensor_data.hpp>
 #endif
 
 namespace mc_plugin
@@ -77,6 +78,9 @@ protected:
   };
 
 public:
+  /** \brief Destructor. */
+  ~TactileSensorPlugin();
+
   /** \brief Returns the plugin configuration. */
   mc_control::GlobalPlugin::GlobalPluginConfiguration configuration() override;
 
@@ -103,7 +107,7 @@ protected:
       \param sensorIdx sensor index
       \param tactileSensorIdx tactile sensor index
    */
-  void mujocoSensorCallback(const mujoco_tactile_sensor_plugin::TactileSensorData::ConstPtr & sensorMsg,
+  void mujocoSensorCallback(const mujoco_tactile_sensor_plugin::msg::TactileSensorData::ConstSharedPtr & sensorMsg,
                             size_t sensorIdx,
                             size_t tactileSensorIdx);
 #endif
@@ -114,7 +118,7 @@ protected:
       \param sensorIdx sensor index
       \param tactileSensorIdx tactile sensor index
      */
-  void eskinSensorCallback(const eskin_ros_utils::PatchData::ConstPtr & sensorMsg,
+  void eskinSensorCallback(const eskin_ros_utils::msg::PatchData::ConstSharedPtr & sensorMsg,
                            size_t sensorIdx,
                            size_t tactileSensorIdx);
 #endif
@@ -128,9 +132,11 @@ protected:
 
   //! ROS variables
   //! @{
-  std::unique_ptr<ros::NodeHandle> nh_;
-  ros::CallbackQueue callbackQueue_;
-  std::vector<ros::Subscriber> sensorSubList_;
+  bool ownsRclcppContext_ = false;
+  rclcpp::Context::SharedPtr context_;
+  rclcpp::Node::SharedPtr node_;
+  std::unique_ptr<rclcpp::executors::SingleThreadedExecutor> executor_;
+  std::vector<rclcpp::SubscriptionBase::SharedPtr> sensorSubList_;
   //! @}
 };
 

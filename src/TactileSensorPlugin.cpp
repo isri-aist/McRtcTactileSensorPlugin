@@ -2,11 +2,24 @@
 #include <mc_rtc/DataStore.h>
 
 #include <McRtcTactileSensorPlugin/TactileSensorPlugin.h>
-#include <eigen_conversions/eigen_msg.h>
+#include <tf2_eigen/tf2_eigen.hpp>
+#include <chrono>
 #include <functional>
 
 namespace
 {
+template<typename MsgT>
+void msgToEigen(const MsgT & msg, Eigen::Vector3d & out)
+{
+  tf2::fromMsg(msg, out);
+}
+
+template<typename MsgT>
+void msgToEigen(const MsgT & msg, Eigen::Quaterniond & out)
+{
+  tf2::fromMsg(msg, out);
+}
+
 std::vector<Eigen::Vector3d> getRectVertices(const std::vector<Eigen::Vector3d> & points)
 {
   if(points.empty())
@@ -30,6 +43,22 @@ std::vector<Eigen::Vector3d> getRectVertices(const std::vector<Eigen::Vector3d> 
 
 namespace mc_plugin
 {
+
+TactileSensorPlugin::~TactileSensorPlugin()
+{
+  sensorSubList_.clear();
+  if(executor_ && node_)
+  {
+    executor_->remove_node(node_);
+  }
+  executor_.reset();
+  node_.reset();
+  if(ownsRclcppContext_ && context_ && context_->is_valid())
+  {
+    context_->shutdown("TactileSensorPlugin shutdown");
+  }
+  context_.reset();
+}
 
 mc_control::GlobalPlugin::GlobalPluginConfiguration TactileSensorPlugin::configuration()
 {
@@ -141,11 +170,28 @@ void TactileSensorPlugin::init(mc_control::MCGlobalController & gc, const mc_rtc
     sensorInfoList_.push_back(sensorInfo);
   }
 
-  // Setup ROS
-  nh_ = std::make_unique<ros::NodeHandle>();
-  // Use a dedicated queue so as not to call callbacks of other modules
-  nh_->setCallbackQueue(&callbackQueue_);
+  // Setup ROS 2
+  context_ = rclcpp::contexts::get_global_default_context();
+  if(!context_->is_valid())
+  {
+    context_ = std::make_shared<rclcpp::Context>();
+    int argc = 0;
+    char const * const * argv = nullptr;
+    context_->init(argc, argv);
+    ownsRclcppContext_ = true;
+  }
+  auto nodeOptions = rclcpp::NodeOptions();
+  nodeOptions.context(context_);
+  node_ = std::make_shared<rclcpp::Node>("mc_rtc_tactile_sensor_plugin", nodeOptions);
+
+  auto executorOptions = rclcpp::ExecutorOptions();
+  executorOptions.context = context_;
+  executor_ = std::make_unique<rclcpp::executors::SingleThreadedExecutor>(executorOptions);
+  executor_->add_node(node_);
+
   sensorSubList_.clear();
+  auto qos = rclcpp::SensorDataQoS();
+  qos.keep_last(1);
   for(size_t sensorIdx = 0; sensorIdx < sensorInfoList_.size(); sensorIdx++)
   {
     const auto & sensorInfo = sensorInfoList_[sensorIdx];
@@ -155,19 +201,21 @@ void TactileSensorPlugin::init(mc_control::MCGlobalController & gc, const mc_rtc
 #if ENABLE_MUJOCO
       if(sensorInfo.msgType == MsgType::Mujoco)
       {
-        sensorSubList_.push_back(nh_->subscribe<mujoco_tactile_sensor_plugin::TactileSensorData>(
-            tactileSensorInfo.topicName, 1,
-            std::bind(&TactileSensorPlugin::mujocoSensorCallback, this, std::placeholders::_1, sensorIdx,
-                      tactileSensorIdx)));
+        sensorSubList_.push_back(node_->create_subscription<mujoco_tactile_sensor_plugin::msg::TactileSensorData>(
+            tactileSensorInfo.topicName, qos,
+            [this, sensorIdx, tactileSensorIdx](
+                const mujoco_tactile_sensor_plugin::msg::TactileSensorData::ConstSharedPtr sensorMsg)
+            { mujocoSensorCallback(sensorMsg, sensorIdx, tactileSensorIdx); }));
       }
 #endif
 #if ENABLE_ESKIN
       if(sensorInfo.msgType == MsgType::Eskin)
       {
         sensorSubList_.push_back(
-            nh_->subscribe<eskin_ros_utils::PatchData>(tactileSensorInfo.topicName, 1,
-                                                       std::bind(&TactileSensorPlugin::eskinSensorCallback, this,
-                                                                 std::placeholders::_1, sensorIdx, tactileSensorIdx)));
+            node_->create_subscription<eskin_ros_utils::msg::PatchData>(
+                tactileSensorInfo.topicName, qos,
+                [this, sensorIdx, tactileSensorIdx](const eskin_ros_utils::msg::PatchData::ConstSharedPtr sensorMsg)
+                { eskinSensorCallback(sensorMsg, sensorIdx, tactileSensorIdx); }));
       }
 #endif
     }
@@ -204,8 +252,11 @@ void TactileSensorPlugin::before(mc_control::MCGlobalController & gc)
   auto & controller = gc.controller();
   auto & robot = controller.robot();
 
-  // Call ROS callback
-  callbackQueue_.callAvailable(ros::WallDuration());
+  // Call ROS 2 callbacks
+  if(executor_)
+  {
+    executor_->spin_some(std::chrono::milliseconds(0));
+  }
 
   // Set measured wrench
   for(size_t sensorIdx = 0; sensorIdx < sensorInfoList_.size(); sensorIdx++)
@@ -258,7 +309,7 @@ void TactileSensorPlugin::setDatastore(mc_rtc::DataStore & datastore, const std:
 
 #if ENABLE_MUJOCO
 void TactileSensorPlugin::mujocoSensorCallback(
-    const mujoco_tactile_sensor_plugin::TactileSensorData::ConstPtr & sensorMsg,
+    const mujoco_tactile_sensor_plugin::msg::TactileSensorData::ConstSharedPtr & sensorMsg,
     size_t sensorIdx,
     size_t tactileSensorIdx)
 {
@@ -271,8 +322,8 @@ void TactileSensorPlugin::mujocoSensorCallback(
   {
     Eigen::Vector3d position;
     Eigen::Vector3d normal;
-    tf::pointMsgToEigen(sensorMsg->positions[i], position);
-    tf::vectorMsgToEigen(sensorMsg->normals[i], normal);
+    msgToEigen(sensorMsg->positions[i], position);
+    msgToEigen(sensorMsg->normals[i], normal);
     Eigen::Vector3d force = sensorInfo.forceScale * sensorMsg->forces[i] * normal;
     Eigen::Vector3d moment = position.cross(force);
     wrench.force() += force;
@@ -291,7 +342,7 @@ void TactileSensorPlugin::mujocoSensorCallback(
 #endif
 
 #if ENABLE_ESKIN
-void TactileSensorPlugin::eskinSensorCallback(const eskin_ros_utils::PatchData::ConstPtr & sensorMsg,
+void TactileSensorPlugin::eskinSensorCallback(const eskin_ros_utils::msg::PatchData::ConstSharedPtr & sensorMsg,
                                               size_t sensorIdx,
                                               size_t tactileSensorIdx)
 {
@@ -304,8 +355,8 @@ void TactileSensorPlugin::eskinSensorCallback(const eskin_ros_utils::PatchData::
   {
     Eigen::Vector3d position;
     Eigen::Quaterniond quat;
-    tf::pointMsgToEigen(cellMsg.pose.position, position);
-    tf::quaternionMsgToEigen(cellMsg.pose.orientation, quat);
+    msgToEigen(cellMsg.pose.position, position);
+    msgToEigen(cellMsg.pose.orientation, quat);
     Eigen::Vector3d normal = -1.0 * quat.toRotationMatrix().col(2);
     // Edit here to change the conversion calibration from e-Skin tactile measurements to force
     Eigen::Vector3d force =

@@ -26,15 +26,24 @@ if(NOT TARGET mc_rtc::mc_rtc_ros)
   message(FATAL_ERROR "mc_rtc ROS plugin is required for this controller")
 endif()
 
-# eigen_conversions
-pkg_check_modules(eigen_conversions REQUIRED IMPORTED_TARGET eigen_conversions)
+find_package(rclcpp REQUIRED CONFIG)
+find_package(tf2_eigen REQUIRED CONFIG)
 
-find_package(PkgConfig)
+function(check_rosidl_typesupport_cpp_target package_name)
+  if(NOT TARGET
+     ${package_name}::${package_name}__rosidl_typesupport_cpp)
+    message(
+      FATAL_ERROR
+        "The ROS 2 package ${package_name} was found, but the expected C++ typesupport target "
+        "${package_name}::${package_name}__rosidl_typesupport_cpp was not exported."
+    )
+  endif()
+endfunction()
 
 if(ENABLE_MUJOCO)
   # mujoco_tactile_sensor_plugin
-  pkg_check_modules(mujoco_tactile_sensor_plugin REQUIRED IMPORTED_TARGET
-                    mujoco_tactile_sensor_plugin)
+  find_package(mujoco_tactile_sensor_plugin REQUIRED CONFIG)
+  check_rosidl_typesupport_cpp_target(mujoco_tactile_sensor_plugin)
   message("-- Enable MuJoCo")
 else()
   message("-- Disable MuJoCo")
@@ -42,7 +51,8 @@ endif()
 
 if(ENABLE_ESKIN)
   # eskin_ros_utils
-  pkg_check_modules(eskin_ros_utils REQUIRED IMPORTED_TARGET eskin_ros_utils)
+  find_package(eskin_ros_utils REQUIRED CONFIG)
+  check_rosidl_typesupport_cpp_target(eskin_ros_utils)
   message("-- Enable e-Skin")
 else()
   message("-- Disable e-Skin")

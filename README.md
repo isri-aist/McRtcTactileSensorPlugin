@@ -1,3 +1,5 @@
+**This is the branch for ROS2; use [the ros1 branch](https://github.com/isri-aist/McRtcTactileSensorPlugin/tree/ros1) for ROS1.**
+
 # [McRtcTactileSensorPlugin](https://github.com/isri-aist/McRtcTactileSensorPlugin)
 mc_rtc plugin to use tactile sensor in controller via ROS interface
 
